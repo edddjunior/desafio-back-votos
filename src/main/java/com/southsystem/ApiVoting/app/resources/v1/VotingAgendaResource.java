@@ -48,7 +48,7 @@ public class VotingAgendaResource {
 		}
 
 		VotingAgendaEntity votingAgenda = votingAgendaMapper.toEntity(req);
-		votingAgendaService.createVotingAgenda(votingAgenda);
+		votingAgendaService.create(votingAgenda);
 
 		response.setData(votingAgendaMapper.toResponse(votingAgenda));
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

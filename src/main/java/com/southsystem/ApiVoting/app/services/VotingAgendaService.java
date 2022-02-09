@@ -16,15 +16,15 @@ public interface VotingAgendaService {
 	Optional<VotingAgendaEntity> findVotingAgenda(Long votingAgendaId);
 
 	/**
-	 * Saves a VotingAgenda.
+	 * Creates a VotingAgenda.
 	 * 
 	 * @param VotingAgendaEntity
 	 * @return VotingAgendaEntity
 	 */
-	VotingAgendaEntity createVotingAgenda(VotingAgendaEntity votingAgenda);
+	VotingAgendaEntity create(VotingAgendaEntity votingAgenda);
 
 	/**
-	 * Adds User to some VotingAgenda.
+	 * Adds given User to given VotingAgenda.
 	 * 
 	 * @param VotingAgendaEntity
 	 * @param UserEntity

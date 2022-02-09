@@ -27,11 +27,11 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	}
 
 	/**
-	 * @see VotingAgendaService#createVotingAgenda(VotingAgendaEntity)
+	 * @see VotingAgendaService#create(VotingAgendaEntity)
 	 */
 	@Override
 	@Transactional
-	public VotingAgendaEntity createVotingAgenda(VotingAgendaEntity votingAgenda) {
+	public VotingAgendaEntity create(VotingAgendaEntity votingAgenda) {
 		return votingAgendaRepository.save(votingAgenda);
 	}
 
