@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,13 +38,19 @@ public class VotingAgendaResource {
 	@ApiOperation(value = "Create Voting Agenda")
 	public ResponseEntity<Response<VotingAgendaResponseDTO>> postVotingAgenda(
 			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
-			@Valid @RequestBody CreateVotingAgendaRequestDTO req) {
+			@Valid @RequestBody CreateVotingAgendaRequestDTO req, BindingResult result) {
 
 		Response<VotingAgendaResponseDTO> response = new Response<>();
+
+		if (result.hasErrors()) {
+			result.getAllErrors().forEach(error -> response.addErrorMsgToResponse(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+
 		VotingAgendaEntity votingAgenda = votingAgendaMapper.toEntity(req);
 		votingAgendaService.createVotingAgenda(votingAgenda);
-		response.setData(votingAgendaMapper.toResponse(votingAgenda));
 
+		response.setData(votingAgendaMapper.toResponse(votingAgenda));
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
