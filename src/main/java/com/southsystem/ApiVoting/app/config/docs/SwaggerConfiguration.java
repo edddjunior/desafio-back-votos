@@ -1,4 +1,4 @@
-package com.southsystem.ApiVoting.app.apiConfig.docs;
+package com.southsystem.ApiVoting.app.config.docs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ public class SwaggerConfiguration {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.southsystem.ApiVoting.app.api.resources"))
+				.apis(RequestHandlerSelectors.basePackage("com.southsystem.ApiVoting.app.resources"))
 				.paths(PathSelectors.any()).build().apiInfo(metaInfo());
 	}
 
