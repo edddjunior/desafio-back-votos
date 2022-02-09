@@ -13,10 +13,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "voting_agenda")
@@ -42,5 +44,10 @@ public class VotingAgendaEntity {
 		joinColumns = @JoinColumn(name = "agenda_id"), 
 		inverseJoinColumns = @JoinColumn(name = "voter_id")
 	)
+	@Setter(AccessLevel.NONE)
 	private List<UserEntity> voters;
+	
+	public void addVoter(UserEntity voter) {
+		this.voters.add(voter);
+	}
 }
