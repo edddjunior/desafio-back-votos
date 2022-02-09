@@ -18,17 +18,27 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	@Autowired
 	private VotingAgendaRepository votingAgendaRepository;
 
+	/**
+	 * @see VotingAgendaService#findVotingAgenda(Long)
+	 */
 	@Override
 	public Optional<VotingAgendaEntity> findVotingAgenda(Long votingAgendaId) {
 		return votingAgendaRepository.findById(votingAgendaId);
 	}
 
+	/**
+	 * @see VotingAgendaService#createVotingAgenda(VotingAgendaEntity)
+	 */
 	@Override
 	@Transactional
 	public VotingAgendaEntity createVotingAgenda(VotingAgendaEntity votingAgenda) {
 		return votingAgendaRepository.save(votingAgenda);
 	}
 
+	/**
+	 * @see VotingAgendaService#addUserToVotingAgenda(VotingAgendaEntity,
+	 *      UserEntity)
+	 */
 	@Override
 	public VotingAgendaEntity addUserToVotingAgenda(VotingAgendaEntity votingAgenda, UserEntity user) {
 		// TODO Auto-generated method stub
