@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateUserDTO {
+public class CreateUserRequestDTO {
 
 	@NotNull(message = "'title' is null")
 	@NotEmpty(message = "'title' is empty.")
