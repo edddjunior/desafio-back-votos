@@ -1,14 +1,13 @@
 package com.southsystem.ApiVoting.app.domain.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +24,14 @@ public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
+	@Column(name = "id", nullable = false)
 	private Long id;
-	@Column(name = "cpf")
+
+	@NotNull(message = "'cpf' is null")
+	@NotEmpty(message = "'cpf' is empty.")
+	@Column(name = "cpf", nullable = false)
 	private String cpf;
-	@ManyToMany(mappedBy = "voters")
-	private List<VotingAgendaEntity> votingAgendas;
+
+	@Column(name = "name")
+	private String name;
 }
