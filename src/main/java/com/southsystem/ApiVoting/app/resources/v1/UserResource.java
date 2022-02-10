@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.southsystem.ApiVoting.app.config.dto.response.Response;
 import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
 import com.southsystem.ApiVoting.app.resources.requests.CreateUserRequestDTO;
+import com.southsystem.ApiVoting.app.resources.responses.UserResponseDTO;
 import com.southsystem.ApiVoting.app.services.UserService;
+import com.southsystem.ApiVoting.app.services.mappers.UserMapper;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 import io.swagger.annotations.ApiOperation;
@@ -45,10 +47,10 @@ public class UserResource {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		UserEntity votingAgenda = userMapper.toEntity(req);
-		userService.create(votingAgenda);
+		UserEntity user = userMapper.toEntity(req);
+		userService.create(user);
 
-		response.setData(userMapper.toResponse(votingAgenda));
+		response.setData(userMapper.toResponse(user));
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
