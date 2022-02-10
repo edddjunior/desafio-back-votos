@@ -1,4 +1,4 @@
-package com.southsystem.ApiVoting.app.resources.responses;
+package com.southsystem.ApiVoting.app.domain.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserResponseDTO {
+public class VotingAgendaDTO {
 
 	private Long id;
-	private String cpf;
-	private String name;
+	private String title;
 }

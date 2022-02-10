@@ -9,10 +9,10 @@ public interface UserService {
 	/**
 	 * Finds an User by its id.
 	 * 
-	 * @param userId
+	 * @param Long
 	 * @return Optional<UserEntity>
 	 */
-	Optional<UserEntity> findUser(Long userId);
+	Optional<UserEntity> find(Long userId);
 
 	/**
 	 * Creates an User.
@@ -20,5 +20,5 @@ public interface UserService {
 	 * @param UserEntity
 	 * @return UserEntity
 	 */
-	UserEntity create(UserEntity user);
+	UserEntity create(UserEntity data);
 }

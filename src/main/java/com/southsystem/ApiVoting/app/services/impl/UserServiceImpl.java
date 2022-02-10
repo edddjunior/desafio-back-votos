@@ -16,12 +16,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	/**
-	 * @see UserService#findUser(Long)
+	 * @see UserService#find(Long)
 	 */
 	@Override
-	public Optional<UserEntity> findUser(Long userId) {
+	public Optional<UserEntity> find(Long userId) {
 		return userRepository.findById(userId);
 	}
 
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	@Transactional
-	public UserEntity create(UserEntity user) {
-		return userRepository.save(user);
+	public UserEntity create(UserEntity data) {
+		return userRepository.save(data);
 	}
 }

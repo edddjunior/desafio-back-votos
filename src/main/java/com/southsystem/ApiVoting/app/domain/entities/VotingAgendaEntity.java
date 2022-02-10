@@ -5,15 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -31,7 +35,19 @@ public class VotingAgendaEntity {
 
 	@NotNull(message = "'title' is null")
 	@NotEmpty(message = "'title' is empty.")
-	@Length(min = 5, max = 80, message = "'title' is invalid. Must have 5 to 80 characters.")
+	@Length(min = 5, max = 80, message = "'title' is not valid. Must have 5 to 80 characters.")
 	@Column(name = "title", nullable = false)
 	private String title;
+
+	@OneToOne
+	@JoinColumn(name = "voting_session_id")
+	private VotingSessionEntity votingSession;
+
+	@Getter(AccessLevel.NONE)
+	@Column(name = "has_started", nullable = true)
+	private boolean hasStarted;
+
+	public boolean hasStarted() {
+		return hasStarted;
+	}
 }

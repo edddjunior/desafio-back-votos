@@ -9,10 +9,10 @@ public interface VotingAgendaService {
 	/**
 	 * Finds a VotingAgenda by its id.
 	 * 
-	 * @param votingAgendaId
+	 * @param Long
 	 * @return Optional<VotingAgendaEntity>
 	 */
-	Optional<VotingAgendaEntity> findVotingAgenda(Long votingAgendaId);
+	Optional<VotingAgendaEntity> find(Long votingAgendaId);
 
 	/**
 	 * Creates a VotingAgenda.
@@ -20,5 +20,5 @@ public interface VotingAgendaService {
 	 * @param VotingAgendaEntity
 	 * @return VotingAgendaEntity
 	 */
-	VotingAgendaEntity create(VotingAgendaEntity votingAgenda);
+	VotingAgendaEntity create(VotingAgendaEntity data);
 }

@@ -18,10 +18,10 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	private VotingAgendaRepository votingAgendaRepository;
 
 	/**
-	 * @see VotingAgendaService#findVotingAgenda(Long)
+	 * @see VotingAgendaService#find(Long)
 	 */
 	@Override
-	public Optional<VotingAgendaEntity> findVotingAgenda(Long votingAgendaId) {
+	public Optional<VotingAgendaEntity> find(Long votingAgendaId) {
 		return votingAgendaRepository.findById(votingAgendaId);
 	}
 
@@ -30,7 +30,7 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	 */
 	@Override
 	@Transactional
-	public VotingAgendaEntity create(VotingAgendaEntity votingAgenda) {
-		return votingAgendaRepository.save(votingAgenda);
+	public VotingAgendaEntity create(VotingAgendaEntity data) {
+		return votingAgendaRepository.save(data);
 	}
 }

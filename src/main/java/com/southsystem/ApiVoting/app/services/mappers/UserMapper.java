@@ -2,9 +2,9 @@ package com.southsystem.ApiVoting.app.services.mappers;
 
 import org.springframework.stereotype.Service;
 
+import com.southsystem.ApiVoting.app.domain.dto.UserDTO;
 import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
 import com.southsystem.ApiVoting.app.resources.requests.CreateUserRequestDTO;
-import com.southsystem.ApiVoting.app.resources.responses.UserResponseDTO;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 @Service
@@ -28,10 +28,10 @@ public class UserMapper {
 	 * Converts VotingAgenda entity to its response data representation.
 	 * 
 	 * @param UserEntity
-	 * @return UserResponseDTO
+	 * @return UserDTO
 	 */
-	public UserResponseDTO toResponse(UserEntity entity) {
-		UserResponseDTO response = new UserResponseDTO();
+	public UserDTO toUserDTO(UserEntity entity) {
+		UserDTO response = new UserDTO();
 		ApiUtil.setIfNotNull(response::setId, entity.getId());
 		ApiUtil.setIfNotNull(response::setCpf, entity.getCpf());
 		ApiUtil.setIfNotNull(response::setName, entity.getName());
