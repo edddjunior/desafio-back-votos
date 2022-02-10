@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
-@RequestMapping("v1/voting-agenda")
+@RequestMapping("v1/voting/agendas")
 public class VotingAgendaResource {
 
 	@Autowired
