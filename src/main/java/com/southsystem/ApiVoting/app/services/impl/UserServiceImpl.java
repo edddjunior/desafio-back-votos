@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
@@ -13,6 +14,7 @@ import com.southsystem.ApiVoting.app.services.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
+	@Autowired
 	private UserRepository userRepository;
 	
 	/**
