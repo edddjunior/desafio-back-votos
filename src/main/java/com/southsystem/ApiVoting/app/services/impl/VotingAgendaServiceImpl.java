@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
 import com.southsystem.ApiVoting.app.domain.entities.VotingAgendaEntity;
 import com.southsystem.ApiVoting.app.domain.repositories.VotingAgendaRepository;
 import com.southsystem.ApiVoting.app.services.VotingAgendaService;
@@ -33,15 +32,5 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	@Transactional
 	public VotingAgendaEntity create(VotingAgendaEntity votingAgenda) {
 		return votingAgendaRepository.save(votingAgenda);
-	}
-
-	/**
-	 * @see VotingAgendaService#addUserToVotingAgenda(VotingAgendaEntity,
-	 *      UserEntity)
-	 */
-	@Override
-	public VotingAgendaEntity addUserToVotingAgenda(VotingAgendaEntity votingAgenda, UserEntity user) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
