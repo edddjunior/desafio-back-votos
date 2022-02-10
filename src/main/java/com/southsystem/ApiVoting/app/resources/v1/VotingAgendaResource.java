@@ -35,7 +35,7 @@ public class VotingAgendaResource {
 	private VotingAgendaMapper votingAgendaMapper;
 
 	@PostMapping(path = "", produces = { "application/json" })
-	@ApiOperation(value = "Create Voting Agenda")
+	@ApiOperation(value = "Create VotingResource Agenda")
 	public ResponseEntity<Response<VotingAgendaResponseDTO>> postVotingAgenda(
 			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
 			@Valid @RequestBody CreateVotingAgendaRequestDTO req, BindingResult result) {

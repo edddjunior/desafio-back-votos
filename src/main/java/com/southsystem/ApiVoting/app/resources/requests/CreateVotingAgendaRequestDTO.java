@@ -20,8 +20,6 @@ public class CreateVotingAgendaRequestDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = -3436276456948550079L;
 
-	private Long id;
-
 	@NotNull(message = "'title' is null")
 	@NotEmpty(message = "'title' is empty.")
 	@Length(min = 5, max = 80, message = "'title' is invalid. Must have 5 to 80 characters.")
