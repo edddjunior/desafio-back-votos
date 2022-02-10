@@ -44,7 +44,7 @@ public class VotingAgendaServiceImplTest extends VotingAgendaServiceImplTestSetu
 	@Test
 	@Order(3)
 	public void testCreateWhenRequiredFieldsAreNotPresent() {
-		VotingAgendaEntity mock = VotingAgendaFixtures.getInvalidVotingAgenda();
+		VotingAgendaEntity mock = VotingAgendaFixtures.getInvalidVotingAgendaMock();
 //		setupSaveMockRepo(mock, null);
 
 		VotingAgendaEntity response = null;
@@ -52,6 +52,21 @@ public class VotingAgendaServiceImplTest extends VotingAgendaServiceImplTestSetu
 			response = votingAgendaService.create(mock);
 		} catch (TransactionSystemException e) {
 			assertEquals(TransactionSystemException.class, e.getClass());
+		}
+		assertNull(response);
+	}
+
+	@Test
+	@Order(4)
+	public void testCreateWhenTitleIsEmpty() {
+		VotingAgendaEntity mock = VotingAgendaFixtures.getEmptyTitleVotingAgendaMock();
+//		setupSaveMockRepo(mock, null);
+
+		VotingAgendaEntity response = null;
+		try {
+			response = votingAgendaService.create(mock);
+		} catch (ConstraintViolationException e) {
+			assertEquals(ConstraintViolationException.class, e.getClass());
 		}
 		assertNull(response);
 	}
