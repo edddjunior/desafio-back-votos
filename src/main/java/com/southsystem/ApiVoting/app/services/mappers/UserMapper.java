@@ -30,7 +30,7 @@ public class UserMapper {
 	 * @param UserEntity
 	 * @return UserDTO
 	 */
-	public UserDTO toUserDTO(UserEntity entity) {
+	public UserDTO toDTO(UserEntity entity) {
 		UserDTO response = new UserDTO();
 		ApiUtil.setIfNotNull(response::setId, entity.getId());
 		ApiUtil.setIfNotNull(response::setCpf, entity.getCpf());

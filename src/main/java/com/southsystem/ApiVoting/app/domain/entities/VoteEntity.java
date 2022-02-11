@@ -32,17 +32,18 @@ public class VoteEntity {
 	@Column(name = "id", nullable = false, unique = true)
 	private Long id;
 
-	@NotNull
+	@NotNull(message = "'voting_session_id' is null.")
 	@ManyToOne
 	@JoinColumn(name = "voting_session_id")
 	private VotingSessionEntity session;
 
-	@NotNull
+	@NotNull(message = "'user_id' is null.")
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 
-	@NotNull(message = "'voteType' is null")
+	@NotNull(message = "'voteType' is null.")
 	@Enumerated(EnumType.STRING)
+	@Column(name = "vote_type")
 	private VoteType voteType;
 }

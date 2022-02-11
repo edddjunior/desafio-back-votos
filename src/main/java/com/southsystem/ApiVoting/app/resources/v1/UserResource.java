@@ -47,7 +47,7 @@ public class UserResource {
 		}
 
 		UserEntity user = userService.create(userMapper.toEntity(req));
-		response.setData(userMapper.toUserDTO(user));
+		response.setData(userMapper.toDTO(user));
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
