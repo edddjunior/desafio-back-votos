@@ -7,29 +7,6 @@ volumes:
     name: kafka_data
 
 services:
-  vote-api:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    depends_on:
-      - kafka
-      - mysql
-    command: 'mvn spring-boot:run'
-    environment:
-      - PROFILE=dev
-      - JAVA_TOOL_OPTIONS="-Xmx512m"
-      - DATABASE_HOST=mysql
-      - DATABASE_USER=admin-vote-api
-      - DATABASE_PASSWORD=123456
-      - DATABASE_NAME=vote-database
-      - DATABASE_PORT=3306
-    volumes:
-      - './configuration:/tmp/configuration:delegated'
-      - './vote-api:/tmp/app:delegated'
-      - '~/.m2:/home/deploy/.m2:cached'
-    networks:
-      - default
-
   zookeeper:
     image: 'bitnami/zookeeper:3'
     ports:
@@ -52,12 +29,33 @@ services:
     depends_on:
       - zookeeper
 
-  mysql:
-    image: mysql:8.0
+  postgres:
+    image: 'postgres:14-alpine'
     ports:
-      - 3306:3306
+      - 5432:5432
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=vote-database
-      - MYSQL_USER=admin-vote-api
-      - MYSQL_PASSWORD=123456
+      - POSTGRES_DB=vote_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+
+  vote-api:
+    build:
+      context: .
+      dockerfile: ./Docker/run/Dockerfile
+    depends_on:
+      - kafka
+      - postgres
+    command: 'mvn spring-boot:run'
+    environment:
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - './configuration:/tmp/configuration:delegated'
+      - './vote-api:/tmp/app:delegated'
+      - '~/.m2:/home/deploy/.m2:cached'
+    networks:
+      - default
+    ports:
+      - 8080:8080
+    restart: always
