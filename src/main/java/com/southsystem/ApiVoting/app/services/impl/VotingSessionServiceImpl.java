@@ -1,7 +1,6 @@
 package com.southsystem.ApiVoting.app.services.impl;
 
 import java.time.LocalDateTime;
-
 import java.util.Optional;
 
 import javax.transaction.Transactional;

@@ -2,6 +2,9 @@ package com.southsystem.ApiVoting.app.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
 
 public interface UserService {
@@ -13,6 +16,13 @@ public interface UserService {
 	 * @return Optional<UserEntity>
 	 */
 	Optional<UserEntity> find(Long userId);
+
+	/**
+	 * Returns all the User entities paged.
+	 * 
+	 * @return Page<UserEntity>
+	 */
+	Page<UserEntity> findAll(Pageable pageable);
 
 	/**
 	 * Creates an User.

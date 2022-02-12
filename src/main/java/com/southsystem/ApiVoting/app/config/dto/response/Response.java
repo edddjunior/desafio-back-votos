@@ -16,6 +16,8 @@ public class Response<T> {
 
 	private T data;
 	private Object errors;
+	private Integer totalPages;
+	private Long totalElements;
 
 	/**
 	 * Formats an error message to the HTTP response.

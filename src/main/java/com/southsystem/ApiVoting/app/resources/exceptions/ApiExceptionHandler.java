@@ -15,6 +15,14 @@ import com.southsystem.ApiVoting.app.config.dto.response.Response;
 @ControllerAdvice
 public class ApiExceptionHandler<T> {
 
+	@ExceptionHandler(value = { UserNotFoundException.class })
+	private ResponseEntity<Response<T>> handleUserNotFoundException(UserNotFoundException exception,
+			WebRequest request) {
+		Response<T> response = new Response<>();
+		response.addErrorMsgToResponse(exception.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	}
+
 	@ExceptionHandler(value = { VotingAgendaNotFoundException.class })
 	private ResponseEntity<Response<T>> handleVotingAgendaNotFoundException(VotingAgendaNotFoundException exception,
 			WebRequest request) {
@@ -41,6 +49,14 @@ public class ApiExceptionHandler<T> {
 
 	@ExceptionHandler(value = { ConstraintViolationException.class })
 	private ResponseEntity<Response<T>> handleConstraintViolationException(ConstraintViolationException exception,
+			WebRequest request) {
+		Response<T> response = new Response<>();
+		response.addErrorMsgToResponse(exception.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+
+	@ExceptionHandler(value = { IllegalArgumentException.class })
+	private ResponseEntity<Response<T>> handleIllegalArgoumentExceptionException(IllegalArgumentException exception,
 			WebRequest request) {
 		Response<T> response = new Response<>();
 		response.addErrorMsgToResponse(exception.getLocalizedMessage());

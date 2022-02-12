@@ -8,6 +8,12 @@ import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
 
 public interface VotingSessionRepository extends JpaRepository<VotingSessionEntity, Long> {
 
+	/**
+	 * Finds a VotingSession entity by VotingAgendaId.
+	 * 
+	 * @param Long
+	 * @return Optional<VotingSessionEntity>
+	 */
 	Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId);
 
 }
