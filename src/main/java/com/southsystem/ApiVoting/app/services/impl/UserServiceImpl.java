@@ -20,19 +20,19 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	/**
-	 * @see UserService#findAll(Pageable)
-	 */
-	@Override
-	public Page<UserEntity> findAll(Pageable pageable) {
-		return userRepository.findAll(pageable);
-	}
-
-	/**
 	 * @see UserService#find(Long)
 	 */
 	@Override
 	public Optional<UserEntity> find(Long userId) {
 		return userRepository.findById(userId);
+	}
+
+	/**
+	 * @see UserService#findAll(Pageable)
+	 */
+	@Override
+	public Page<UserEntity> findAll(Pageable pageable) {
+		return userRepository.findAll(pageable);
 	}
 
 	/**

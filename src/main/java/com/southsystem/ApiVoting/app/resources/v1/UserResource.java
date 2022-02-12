@@ -79,7 +79,7 @@ public class UserResource {
 
 		Page<UserEntity> users = userService.findAll(pageable);
 		if (users.isEmpty()) {
-			throw new UserNotFoundException("There are no users registered");
+			throw new UserNotFoundException("There are no users registered.");
 		}
 
 		List<UserDTO> usersDTO = new ArrayList<>();
@@ -132,6 +132,13 @@ public class UserResource {
 		dto.add(selfLink);
 	}
 
+	/**
+	 * Creates self links for the User objects.
+	 * 
+	 * @param String
+	 * @param VotingAgendaDTO
+	 * 
+	 */
 	private void createSelfLink(String apiVersion, final UserDTO dto) {
 		Link selfLink;
 		try {

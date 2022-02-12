@@ -20,6 +20,7 @@ public interface UserService {
 	/**
 	 * Returns all the User entities paged.
 	 * 
+	 * @param Pageable
 	 * @return Page<UserEntity>
 	 */
 	Page<UserEntity> findAll(Pageable pageable);
