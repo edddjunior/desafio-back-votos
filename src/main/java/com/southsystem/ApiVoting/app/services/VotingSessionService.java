@@ -2,6 +2,9 @@ package com.southsystem.ApiVoting.app.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
 
 public interface VotingSessionService {
@@ -13,6 +16,14 @@ public interface VotingSessionService {
 	 * @return Optional<VotingSessionEntity>
 	 */
 	Optional<VotingSessionEntity> find(Long votingSessionId);
+
+	/**
+	 * Returns all the VotingSession entities paged.
+	 * 
+	 * @param Pageable
+	 * @return Page<VotingSessionEntity>
+	 */
+	Page<VotingSessionEntity> findAll(Pageable pageable);
 
 	/**
 	 * Finds a VotingSession by its associated VotingAgenda id.

@@ -58,7 +58,7 @@ public class VotingAgendaResource {
 
 		Optional<VotingAgendaEntity> votingAgenda = votingAgendaService.find(votingAgendaId);
 		if (votingAgenda.isEmpty()) {
-			throw new VotingAgendaNotFoundException("VotingAgenda not found with 'id' = " + votingAgendaId);
+			throw new VotingAgendaNotFoundException("No voting agenda found with 'id' = " + votingAgendaId + ".");
 		}
 		VotingAgendaDTO votingAgendaDTO = votingAgendaMapper.toDTO(votingAgenda.get());
 		createSelfLink(votingAgenda.get(), votingAgendaDTO);

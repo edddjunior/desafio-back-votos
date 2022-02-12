@@ -58,7 +58,7 @@ public class UserResource {
 
 		Optional<UserEntity> user = userService.find(userId);
 		if (user.isEmpty()) {
-			throw new UserNotFoundException("User not found with 'id' = " + userId);
+			throw new UserNotFoundException("No user found with 'id' = " + userId + ".");
 		}
 		UserDTO userDTO = userMapper.toDTO(user.get());
 		createSelfLink(user.get(), userDTO);

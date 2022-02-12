@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
@@ -28,6 +30,14 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	@Override
 	public Optional<VotingSessionEntity> find(Long votingSessionId) {
 		return votingsessionRepository.findById(votingSessionId);
+	}
+
+	/**
+	 * @see VotingSessionService#findAll(Pageable)
+	 */
+	@Override
+	public Page<VotingSessionEntity> findAll(Pageable pageable) {
+		return votingsessionRepository.findAll(pageable);
 	}
 
 	/**
