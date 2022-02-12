@@ -1,5 +1,7 @@
 package com.southsystem.ApiVoting.app.domain.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,7 +27,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VoteEntity {
+public class VoteEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5308059826046485900L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

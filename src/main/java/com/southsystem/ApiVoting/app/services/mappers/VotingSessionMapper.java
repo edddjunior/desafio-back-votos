@@ -23,7 +23,7 @@ public class VotingSessionMapper {
 			VotingAgendaEntity votingAgendaEntity) {
 		VotingSessionEntity votingSession = new VotingSessionEntity();
 		ApiUtil.setIfNotNull(votingSession::setId, null);
-		ApiUtil.setIfNotNull(votingSession::setAgenda, votingAgendaEntity);
+		ApiUtil.setIfNotNull(votingSession::setVotingAgenda, votingAgendaEntity);
 		ApiUtil.setIfNotNull(votingSession::setDurationInMinutes, startVotingSessionRequest.getDurationInMinutes());
 		return votingSession;
 	}
@@ -43,6 +43,8 @@ public class VotingSessionMapper {
 		ApiUtil.setIfNotNull(response::setId, votingSessionEntity.getId());
 		ApiUtil.setIfNotNull(response::setAgenda, votingAgendaDTO);
 		ApiUtil.setIfNotNull(response::setStartDatetime, votingSessionEntity.getStartDatetime());
+		ApiUtil.setIfNotNull(response::setEndDateTime, votingSessionEntity.getEndDateTime());
+		ApiUtil.setIfNotNull(response::setHasStarted, votingSessionEntity.hasStarted());
 		ApiUtil.setIfNotNull(response::setDurationInMinutes, votingSessionEntity.getDurationInMinutes());
 		return response;
 	}

@@ -1,5 +1,8 @@
 package com.southsystem.ApiVoting.app.domain.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,7 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserDTO {
+@EqualsAndHashCode(callSuper = false)
+public class UserDTO extends RepresentationModel<UserDTO> {
 
 	private Long id;
 	private String cpf;

@@ -29,7 +29,7 @@ public class VotingAgendaMapper {
 	 * @param VotingAgendaEntity
 	 * @return VotingAgendaDTO
 	 */
-	public VotingAgendaDTO toVotingAgendaDTO(VotingAgendaEntity entity) {
+	public VotingAgendaDTO toDTO(VotingAgendaEntity entity) {
 		VotingAgendaDTO response = new VotingAgendaDTO();
 		ApiUtil.setIfNotNull(response::setId, entity.getId());
 		ApiUtil.setIfNotNull(response::setTitle, entity.getTitle());

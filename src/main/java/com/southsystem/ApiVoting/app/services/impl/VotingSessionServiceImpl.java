@@ -19,7 +19,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 
 	@Autowired
 	private VotingSessionRepository votingsessionRepository;
-	
+
 	@Value("${app.preferences.session.default_duration_time}")
 	private Long defaultDurationTime;
 
@@ -32,6 +32,14 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	}
 
 	/**
+	 * @see VotingSessionService#findByVotingAgendaId(VotingSessionEntity)
+	 */
+	@Override
+	public Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId) {
+		return votingsessionRepository.findByVotingAgendaId(votingAgendaId);
+	}
+
+	/**
 	 * @see VotingSessionService#create(VotingSessionEntity)
 	 */
 	@Override
@@ -41,8 +49,8 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 			data.setDurationInMinutes(defaultDurationTime);
 		}
 		data.setStartDatetime(LocalDateTime.now());
+		data.setHasStarted(true);
 		data.setEndDateTime(data.getStartDatetime().plusMinutes(data.getDurationInMinutes()));
-		data.getAgenda().setHasStarted(true);
 		return votingsessionRepository.save(data);
 	}
 }

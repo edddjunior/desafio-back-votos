@@ -23,10 +23,9 @@ public class VotingSessionServiceImplTest extends VotingSessionServiceImplTestSe
 		VotingSessionEntity mockSession = VotingSessionFixtures.getNoAgendaVotingSessionMock();
 		VotingAgendaEntity mockAgenda = VotingAgendaFixtures.getCompleteCreatedVotingAgendaMock();
 		VotingAgendaEntity agenda = setupCreateValidExistingAgenda(mockAgenda, null);
-		mockSession.setAgenda(agenda);
+		mockSession.setVotingAgenda(agenda);
 		VotingSessionEntity response = votingSessionService.create(mockSession);
 		assertNotNull(response);
-		assertEquals(mockSession.getAgenda(), response.getAgenda());
 		assertEquals(mockSession.getDurationInMinutes(), response.getDurationInMinutes());
 		assertEquals(response.getStartDatetime().plusMinutes(mockSession.getDurationInMinutes()),
 				response.getEndDateTime());
@@ -38,11 +37,10 @@ public class VotingSessionServiceImplTest extends VotingSessionServiceImplTestSe
 		VotingSessionEntity mockSession = VotingSessionFixtures.getNoDurationVotingSessionMock();
 		VotingAgendaEntity mockAgenda = VotingAgendaFixtures.getCompleteCreatedVotingAgendaMock();
 		VotingAgendaEntity agenda = setupCreateValidExistingAgenda(mockAgenda, null);
-		mockSession.setAgenda(agenda);
+		mockSession.setVotingAgenda(agenda);
 		VotingSessionEntity response = votingSessionService.create(mockSession);
 		assertNotNull(response);
 		assertEquals((long) 1, response.getDurationInMinutes());
-		assertEquals(mockSession.getAgenda(), response.getAgenda());
 		assertEquals(response.getStartDatetime().plusMinutes(response.getDurationInMinutes()),
 				response.getEndDateTime());
 	}
@@ -53,7 +51,7 @@ public class VotingSessionServiceImplTest extends VotingSessionServiceImplTestSe
 		VotingSessionEntity mockSession = VotingSessionFixtures.getInvalidDurationVotingSessionMock();
 		VotingAgendaEntity mockAgenda = VotingAgendaFixtures.getCompleteCreatedVotingAgendaMock();
 		VotingAgendaEntity agenda = setupCreateValidExistingAgenda(mockAgenda, null);
-		mockSession.setAgenda(agenda);
+		mockSession.setVotingAgenda(agenda);
 		VotingSessionEntity response = null;
 		try {
 			response = votingSessionService.create(mockSession);

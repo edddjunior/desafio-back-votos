@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateUserRequestDTO {
 
-	@NotNull(message = "'title' is null.")
-	@NotEmpty(message = "'title' is empty.")
+	@NotNull(message = "'cpf' is null.")
+	@NotEmpty(message = "'cpf' is empty.")
 	private String cpf;
 
 	private String name;

@@ -41,7 +41,7 @@ public class VoteMapper {
 		VoteDTO dto = new VoteDTO();
 		ApiUtil.setIfNotNull(dto::setUser, userMapper.toDTO(entity.getUser()));
 		ApiUtil.setIfNotNull(dto::setSession,
-				votingSessionMapper.toDTO(entity.getSession(), entity.getSession().getAgenda()));
+				votingSessionMapper.toDTO(entity.getSession(), entity.getSession().getVotingAgenda()));
 		return dto;
 	}
 }

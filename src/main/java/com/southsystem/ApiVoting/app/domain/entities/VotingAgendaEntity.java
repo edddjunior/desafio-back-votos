@@ -1,23 +1,21 @@
 package com.southsystem.ApiVoting.app.domain.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -26,7 +24,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VotingAgendaEntity {
+public class VotingAgendaEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4240293083173989204L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,18 +38,6 @@ public class VotingAgendaEntity {
 	@NotNull(message = "'title' is null")
 	@NotEmpty(message = "'title' is empty.")
 	@Length(min = 5, max = 80, message = "'title' is not valid. Must have 5 to 80 characters.")
-	@Column(name = "title", nullable = false)
+	@Column(name = "title", nullable = false, length = 80)
 	private String title;
-
-	@OneToOne
-	@JoinColumn(name = "voting_session_id")
-	private VotingSessionEntity votingSession;
-
-	@Getter(AccessLevel.NONE)
-	@Column(name = "has_started", nullable = true)
-	private boolean hasStarted;
-
-	public boolean hasStarted() {
-		return hasStarted;
-	}
 }

@@ -15,6 +15,14 @@ public interface VotingSessionService {
 	Optional<VotingSessionEntity> find(Long votingSessionId);
 
 	/**
+	 * Finds a VotingSession by its associated VotingAgenda id.
+	 * 
+	 * @param Long
+	 * @return Optional<VotingSessionEntity>
+	 */
+	Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId);
+
+	/**
 	 * Creates a VotingSession.
 	 * 
 	 * @param VotingSessionEntity

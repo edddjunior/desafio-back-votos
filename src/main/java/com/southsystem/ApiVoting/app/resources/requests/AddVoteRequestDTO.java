@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class VoteRequestDTO {
+public class AddVoteRequestDTO {
 
 	@NotNull(message = "'voting_session_id' is null.")
 	private Long votingSessionId;

@@ -1,5 +1,7 @@
 package com.southsystem.ApiVoting.app.domain.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +22,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserEntity {
+public class UserEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -461444634228585948L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +35,9 @@ public class UserEntity {
 
 	@NotNull(message = "'cpf' is null")
 	@NotEmpty(message = "'cpf' is empty.")
-	@Column(name = "cpf", nullable = false)
+	@Column(name = "cpf", nullable = false, length = 14)
 	private String cpf;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = true)
 	private String name;
 }

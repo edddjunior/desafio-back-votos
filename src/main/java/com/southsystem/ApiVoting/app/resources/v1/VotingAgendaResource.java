@@ -3,6 +3,8 @@ package com.southsystem.ApiVoting.app.resources.v1;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -48,10 +50,24 @@ public class VotingAgendaResource {
 		}
 
 		VotingAgendaEntity votingAgenda = votingAgendaService.create(votingAgendaMapper.toEntity(req));
-		response.setData(votingAgendaMapper.toVotingAgendaDTO(votingAgenda));
+		VotingAgendaDTO votingAgendaDTO = votingAgendaMapper.toDTO(votingAgenda);
+		createSelfLink(votingAgenda, votingAgendaDTO);
+		response.setData(votingAgendaDTO);
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+	}
+
+	/**
+	 * Creates a self link of the VotingAgenda object.
+	 * 
+	 * @param UserEntity
+	 * @param UserDTO
+	 * 
+	 */
+	private void createSelfLink(VotingAgendaEntity entity, VotingAgendaDTO dto) {
+		Link selfLink = WebMvcLinkBuilder.linkTo(VotingAgendaResource.class).slash(entity.getId()).withSelfRel();
+		dto.add(selfLink);
 	}
 }

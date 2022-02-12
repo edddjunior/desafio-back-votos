@@ -3,12 +3,15 @@ package com.southsystem.ApiVoting.app.resources.v1;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +40,7 @@ public class UserResource {
 	@ApiOperation(value = "Create Users")
 	public ResponseEntity<Response<UserDTO>> postVotingAgenda(
 			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
-			@Valid @RequestHeader CreateUserRequestDTO req, BindingResult result) {
+			@Valid @RequestBody CreateUserRequestDTO req, BindingResult result) {
 
 		Response<UserDTO> response = new Response<>();
 
@@ -47,10 +50,24 @@ public class UserResource {
 		}
 
 		UserEntity user = userService.create(userMapper.toEntity(req));
-		response.setData(userMapper.toDTO(user));
+		UserDTO userDTO = userMapper.toDTO(user);
+		createSelfLink(user, userDTO);
+		response.setData(userDTO);
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+	}
+
+	/**
+	 * Creates a self link of the User object.
+	 * 
+	 * @param UserEntity
+	 * @param UserDTO
+	 * 
+	 */
+	private void createSelfLink(UserEntity entity, UserDTO dto) {
+		Link selfLink = WebMvcLinkBuilder.linkTo(UserResource.class).slash(entity.getId()).withSelfRel();
+		dto.add(selfLink);
 	}
 }

@@ -20,11 +20,6 @@ public class Fixtures {
 			return VotingSessionEntity.builder().durationInMinutes((long) 10).build();
 		}
 
-		public static VotingSessionEntity getRequiredFieldsVotingSessionMock() {
-			return VotingSessionEntity.builder().agenda(VotingAgendaFixtures.getCompleteCreatedVotingAgendaMock())
-					.durationInMinutes((long) 10).build();
-		}
-
 		public static VotingAgendaEntity getInvalidVotingAgendaMock() {
 			return VotingAgendaEntity.builder().id((long) 1).build();
 		}
