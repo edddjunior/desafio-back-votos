@@ -7,6 +7,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#find(Long)
 	 */
 	@Override
+	@Cacheable(value = "sessions")
 	public Optional<VotingSessionEntity> find(Long votingSessionId) {
 		return votingsessionRepository.findById(votingSessionId);
 	}
@@ -36,6 +40,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#findAll(Pageable)
 	 */
 	@Override
+	@Cacheable(value = "sessions")
 	public Page<VotingSessionEntity> findAll(Pageable pageable) {
 		return votingsessionRepository.findAll(pageable);
 	}
@@ -44,6 +49,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#findByVotingAgendaId(VotingSessionEntity)
 	 */
 	@Override
+	@Cacheable(value = "sessions")
 	public Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId) {
 		return votingsessionRepository.findByVotingAgendaId(votingAgendaId);
 	}
@@ -52,6 +58,8 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#create(VotingSessionEntity)
 	 */
 	@Override
+	@CacheEvict(value = "agendas", allEntries = true)
+	@CachePut(value = "agendas", key = "#data.id")
 	@Transactional
 	public VotingSessionEntity create(VotingSessionEntity data) {
 		if (data.getDurationInMinutes() == null || data.getDurationInMinutes() == (long) 0) {

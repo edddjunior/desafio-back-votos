@@ -31,6 +31,14 @@ public class ApiExceptionHandler<T> {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 
+	@ExceptionHandler(value = { VotingSessionNotFoundException.class })
+	private ResponseEntity<Response<T>> handleVotingSessionException(VotingSessionNotFoundException exception,
+			WebRequest request) {
+		Response<T> response = new Response<>();
+		response.addErrorMsgToResponse(exception.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+
 	@ExceptionHandler(value = { VotingSessionAlreadyStartedException.class })
 	private ResponseEntity<Response<T>> handleVotingSessionException(VotingSessionAlreadyStartedException exception,
 			WebRequest request) {
