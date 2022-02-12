@@ -39,7 +39,7 @@ public class VotingSessionEntity implements Serializable {
 	@Column(name = "id", nullable = false, unique = true)
 	private Long id;
 
-	@NotNull(message = "'voting_agenda_id' is null")
+	@NotNull(message = "'voting_agenda_id' is null.")
 	@OneToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "voting_agenda_id", nullable = false)
 	private VotingAgendaEntity votingAgenda;
@@ -48,12 +48,12 @@ public class VotingSessionEntity implements Serializable {
 	@Column(name = "has_started", nullable = true)
 	private boolean hasStarted;
 
-	@NotNull(message = "'start_datetime' is null")
+	@NotNull(message = "'start_datetime' is null.")
 	@Column(name = "start_datetime", nullable = false)
 	private LocalDateTime startDatetime;
 
-	@NotNull(message = "'duration_in_minutes' is null")
-	@Positive(message = "'duration_in_minutes' must be a positive integer number")
+	@NotNull(message = "'duration_in_minutes' is null.")
+	@Positive(message = "'duration_in_minutes' must be a positive integer number.")
 	@Column(name = "duration_in_minutes", nullable = false)
 	private Long durationInMinutes;
 
