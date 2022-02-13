@@ -13,26 +13,19 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer;
 import com.southsystem.ApiVoting.app.config.dto.response.Response;
 import com.southsystem.ApiVoting.app.domain.dto.VoteDTO;
 import com.southsystem.ApiVoting.app.resources.requests.AddVoteRequestDTO;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 import io.swagger.annotations.ApiOperation;
-import lombok.NonNull;
 
 @RestController
 @RequestMapping("v1/voting/vote")
 public class VoteResource {
 
-	private @NonNull RqueueMessageEnqueuer rqueueMessageEnqueuer;
-
-//	@Value("${email.queue.name}")
-	private String emailQueueName;
-
 	@PostMapping(path = "vote", produces = { "application/json" })
-	@ApiOperation(value = "Send Vote")
+	@ApiOperation(value = "Send Vote.")
 	public ResponseEntity<Response<VoteDTO>> addVote(
 			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
 			@Valid @RequestBody AddVoteRequestDTO req, BindingResult result) {
@@ -45,10 +38,6 @@ public class VoteResource {
 		}
 
 //		messageProducer.send(MessageTopics.VOTE, req);
-
-		if (rqueueMessageEnqueuer.enqueue(emailQueueName, req) != null) {
-
-		}
 
 		response.setData(new VoteDTO());
 

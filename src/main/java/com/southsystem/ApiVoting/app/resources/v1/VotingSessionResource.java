@@ -123,7 +123,7 @@ public class VotingSessionResource {
 		Optional<VotingAgendaEntity> votingAgenda = votingAgendaService.find(req.getVotingAgendaId());
 		if (votingAgenda.isEmpty()) {
 			throw new VotingAgendaNotFoundException(
-					"No voting session found with 'id' = " + req.getVotingAgendaId() + ".");
+					"No voting agenda found with 'id' = " + req.getVotingAgendaId() + ".");
 		}
 		Optional<VotingSessionEntity> votingSession = votingSessionService
 				.findByVotingAgendaId(req.getVotingAgendaId());

@@ -74,14 +74,6 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.github.sonus21/rqueue-spring-boot-starter -->
-		<dependency>
-			<groupId>com.github.sonus21</groupId>
-			<artifactId>rqueue-spring-boot-starter</artifactId>
-			<version>2.10.1-RELEASE</version>
-			<type>pom</type>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
