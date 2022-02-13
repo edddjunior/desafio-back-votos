@@ -15,6 +15,14 @@ import com.southsystem.ApiVoting.app.config.dto.response.Response;
 @ControllerAdvice
 public class ApiExceptionHandler<T> {
 
+	@ExceptionHandler(value = { UserAlreadyVotedException.class })
+	private ResponseEntity<Response<T>> handleUserAlreadyVotedException(UserAlreadyVotedException exception,
+			WebRequest request) {
+		Response<T> response = new Response<>();
+		response.addErrorMsgToResponse(exception.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+	}
+
 	@ExceptionHandler(value = { UserNotFoundException.class })
 	private ResponseEntity<Response<T>> handleUserNotFoundException(UserNotFoundException exception,
 			WebRequest request) {
@@ -32,7 +40,7 @@ public class ApiExceptionHandler<T> {
 	}
 
 	@ExceptionHandler(value = { VotingSessionNotFoundException.class })
-	private ResponseEntity<Response<T>> handleVotingSessionException(VotingSessionNotFoundException exception,
+	private ResponseEntity<Response<T>> handleVotingSessionNotFoundException(VotingSessionNotFoundException exception,
 			WebRequest request) {
 		Response<T> response = new Response<>();
 		response.addErrorMsgToResponse(exception.getLocalizedMessage());
@@ -40,8 +48,16 @@ public class ApiExceptionHandler<T> {
 	}
 
 	@ExceptionHandler(value = { VotingSessionAlreadyStartedException.class })
-	private ResponseEntity<Response<T>> handleVotingSessionException(VotingSessionAlreadyStartedException exception,
-			WebRequest request) {
+	private ResponseEntity<Response<T>> handleVotingSessionAlreadyStartedException(
+			VotingSessionAlreadyStartedException exception, WebRequest request) {
+		Response<T> response = new Response<>();
+		response.addErrorMsgToResponse(exception.getLocalizedMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+
+	@ExceptionHandler(value = { VotingSessionAlreadyEndedException.class })
+	private ResponseEntity<Response<T>> handleVotingSessionAlreadyEndedException(
+			VotingSessionAlreadyEndedException exception, WebRequest request) {
 		Response<T> response = new Response<>();
 		response.addErrorMsgToResponse(exception.getLocalizedMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

@@ -26,7 +26,7 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	 * @see VotingAgendaService#find(Long)
 	 */
 	@Override
-	@Cacheable("agendas")
+//	@Cacheable("agendas")
 	public Optional<VotingAgendaEntity> find(Long votingAgendaId) {
 		return votingAgendaRepository.findById(votingAgendaId);
 	}
@@ -35,7 +35,7 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	 * @see VotingAgendaService#findAll(Pageable)
 	 */
 	@Override
-	@Cacheable("agendas")
+//	@Cacheable("agendas")
 	public Page<VotingAgendaEntity> findAll(Pageable pageable) {
 		return votingAgendaRepository.findAll(pageable);
 	}
@@ -44,8 +44,8 @@ public class VotingAgendaServiceImpl implements VotingAgendaService {
 	 * @see VotingAgendaService#create(VotingAgendaEntity)
 	 */
 	@Override
-	@CacheEvict(value = "agendas", allEntries = true)
-	@CachePut(value = "agendas", key = "#data.id")
+//	@CacheEvict(value = "agendas", allEntries = true)
+//	@CachePut(value = "agendas", key = "#data.id")
 	@Transactional
 	public VotingAgendaEntity create(VotingAgendaEntity data) {
 		return votingAgendaRepository.save(data);

@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 	 * @see UserService#find(Long)
 	 */
 	@Override
-	@Cacheable("users")
+//	@Cacheable("users")
 	public Optional<UserEntity> find(Long userId) {
 		return userRepository.findById(userId);
 	}
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 	 * @see UserService#findAll(Pageable)
 	 */
 	@Override
-	@Cacheable("users")
+//	@Cacheable("users")
 	public Page<UserEntity> findAll(Pageable pageable) {
 		return userRepository.findAll(pageable);
 	}
@@ -44,8 +44,8 @@ public class UserServiceImpl implements UserService {
 	 * @see UserService#create(UserEntity)
 	 */
 	@Override
-	@CacheEvict(value = "users", allEntries = true)
-	@CachePut(value = "users", key = "#data.id")
+//	@CacheEvict(value = "users", allEntries = true)
+//	@CachePut(value = "users", key = "#data.id")
 	@Transactional
 	public UserEntity create(UserEntity data) {
 		return userRepository.save(data);

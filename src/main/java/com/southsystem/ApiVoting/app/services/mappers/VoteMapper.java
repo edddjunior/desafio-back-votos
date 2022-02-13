@@ -1,5 +1,8 @@
 package com.southsystem.ApiVoting.app.services.mappers;
 
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.southsystem.ApiVoting.app.domain.dto.VoteDTO;
@@ -12,7 +15,10 @@ import com.southsystem.ApiVoting.app.util.ApiUtil;
 @Service
 public class VoteMapper {
 
+	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
 	private VotingSessionMapper votingSessionMapper;
 
 	/**
@@ -28,20 +34,27 @@ public class VoteMapper {
 		ApiUtil.setIfNotNull(entity::setId, null);
 		ApiUtil.setIfNotNull(entity::setSession, votingSessionEntity);
 		ApiUtil.setIfNotNull(entity::setVoteType, voteType);
+		ApiUtil.setIfNotNull(entity::setUser, userEntity);
 		return entity;
 	}
 
 	/**
-	 * Converts Vote entity to its response data representation.
+	 * Converts VotingSession, UserEntity and VoteType entity to Vote response data
+	 * representation.
 	 * 
-	 * @param VoteEntity
-	 * @return VoteDTO
+	 * @param VotingSessionEntity
+	 * @param UserEntity
+	 * @param VoteType
+	 * @return VoteEntity
 	 */
-	public VoteDTO toDTO(VoteEntity entity) {
+	public VoteDTO toDTO(VotingSessionEntity votingSessionEntity, UserEntity userEntity, VoteType voteType) {
 		VoteDTO dto = new VoteDTO();
-		ApiUtil.setIfNotNull(dto::setUser, userMapper.toDTO(entity.getUser()));
+		ApiUtil.setIfNotNull(dto::setId, votingSessionEntity.getVotes().stream()
+				.filter(v -> v.getUser().getId() == userEntity.getId()).collect(Collectors.toList()).get(0).getId());
 		ApiUtil.setIfNotNull(dto::setSession,
-				votingSessionMapper.toDTO(entity.getSession(), entity.getSession().getVotingAgenda()));
+				votingSessionMapper.toDTO(votingSessionEntity, votingSessionEntity.getVotingAgenda()));
+		ApiUtil.setIfNotNull(dto::setUser, userMapper.toDTO(userEntity));
+		ApiUtil.setIfNotNull(dto::setVoteType, voteType);
 		return dto;
 	}
 }

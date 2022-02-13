@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.southsystem.ApiVoting.app.domain.entities.VoteEntity;
 import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
 
 public interface VotingSessionService {
@@ -40,4 +41,13 @@ public interface VotingSessionService {
 	 * @return VotingSessionEntity
 	 */
 	VotingSessionEntity create(VotingSessionEntity data);
+
+	/**
+	 * Adds a vote to the session.
+	 * 
+	 * @param VotingSessionEntity
+	 * @param VoteEntity
+	 * @return VoteEntity
+	 */
+	VotingSessionEntity addVote(VotingSessionEntity voteSessionData, VoteEntity voteData);
 }

@@ -1,14 +1,13 @@
 package com.southsystem.ApiVoting.app.services;
 
-import com.southsystem.ApiVoting.app.domain.entities.VoteEntity;
-
 public interface VoteService {
 
 	/**
-	 * Adds a vote to the session.
+	 * Verify if user already voted in the session.
 	 * 
-	 * @param VoteEntity
-	 * @return VoteEntity
+	 * @param sessionId
+	 * @param userId
+	 * @return boolean
 	 */
-	VoteEntity addVote(VoteEntity data);
+	boolean verifyIfUserVoted(Long sessionId, Long userId);
 }

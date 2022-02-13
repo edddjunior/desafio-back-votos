@@ -15,5 +15,4 @@ public interface VotingSessionRepository extends JpaRepository<VotingSessionEnti
 	 * @return Optional<VotingSessionEntity>
 	 */
 	Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId);
-
 }

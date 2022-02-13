@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import com.southsystem.ApiVoting.app.domain.entities.VoteEntity;
 import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
 import com.southsystem.ApiVoting.app.domain.repositories.VotingSessionRepository;
 import com.southsystem.ApiVoting.app.services.VotingSessionService;
@@ -41,7 +43,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#find(Long)
 	 */
 	@Override
-	@Cacheable(value = "sessions")
+//	@Cacheable(value = "sessions")
 	public Optional<VotingSessionEntity> find(Long votingSessionId) {
 		return votingsessionRepository.findById(votingSessionId);
 	}
@@ -50,7 +52,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#findAll(Pageable)
 	 */
 	@Override
-	@Cacheable(value = "sessions")
+//	@Cacheable(value = "sessions")
 	public Page<VotingSessionEntity> findAll(Pageable pageable) {
 		return votingsessionRepository.findAll(pageable);
 	}
@@ -59,7 +61,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#findByVotingAgendaId(VotingSessionEntity)
 	 */
 	@Override
-	@Cacheable(value = "sessions")
+//	@Cacheable(value = "sessions")
 	public Optional<VotingSessionEntity> findByVotingAgendaId(Long votingAgendaId) {
 		return votingsessionRepository.findByVotingAgendaId(votingAgendaId);
 	}
@@ -68,8 +70,10 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 	 * @see VotingSessionService#create(VotingSessionEntity)
 	 */
 	@Override
-	@CacheEvict(value = "agendas", allEntries = true)
-	@CachePut(value = "agendas", key = "#data.id")
+//	@Caching(evict = { @CacheEvict(value = "sessions", allEntries = true),
+//			@CacheEvict(value = "agendas", allEntries = true),
+//			@CacheEvict(value = "users", allEntries = true) }, put = { @CachePut(value = "sessions", key = "#data.id"),
+//					@CachePut(value = "agendas", key = "#data.votingAgenda.id"), @CachePut(value = "users") })
 	@Transactional
 	public VotingSessionEntity create(VotingSessionEntity data) {
 		if (data.getDurationInMinutes() == null || data.getDurationInMinutes() == (long) 0) {
@@ -86,6 +90,18 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 			}
 		});
 		return votingsessionRepository.save(data);
+	}
+
+	/**
+	 * @see VotingSessionService#addVote(VotingSessionEntity, VoteEntity)
+	 */
+	@Override
+//	@CacheEvict(value = "sessions", allEntries = true)
+//	@CachePut(value = "sessions", key = "#data.id")
+	@Transactional
+	public VotingSessionEntity addVote(VotingSessionEntity votingSessionData, VoteEntity voteData) {
+		votingSessionData.getVotes().add(voteData);
+		return votingsessionRepository.save(votingSessionData);
 	}
 
 	/**

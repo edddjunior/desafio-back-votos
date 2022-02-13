@@ -2,6 +2,7 @@ package com.southsystem.ApiVoting.app.resources.v1;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,15 +29,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.southsystem.ApiVoting.app.config.dto.response.Response;
+import com.southsystem.ApiVoting.app.domain.dto.VoteDTO;
 import com.southsystem.ApiVoting.app.domain.dto.VotingSessionDTO;
+import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
 import com.southsystem.ApiVoting.app.domain.entities.VotingAgendaEntity;
 import com.southsystem.ApiVoting.app.domain.entities.VotingSessionEntity;
+import com.southsystem.ApiVoting.app.resources.exceptions.UserAlreadyVotedException;
+import com.southsystem.ApiVoting.app.resources.exceptions.UserNotFoundException;
 import com.southsystem.ApiVoting.app.resources.exceptions.VotingAgendaNotFoundException;
+import com.southsystem.ApiVoting.app.resources.exceptions.VotingSessionAlreadyEndedException;
 import com.southsystem.ApiVoting.app.resources.exceptions.VotingSessionAlreadyStartedException;
 import com.southsystem.ApiVoting.app.resources.exceptions.VotingSessionNotFoundException;
+import com.southsystem.ApiVoting.app.resources.requests.AddVoteRequestDTO;
 import com.southsystem.ApiVoting.app.resources.requests.StartVotingSessionRequestDTO;
+import com.southsystem.ApiVoting.app.services.UserService;
+import com.southsystem.ApiVoting.app.services.VoteService;
 import com.southsystem.ApiVoting.app.services.VotingAgendaService;
 import com.southsystem.ApiVoting.app.services.VotingSessionService;
+import com.southsystem.ApiVoting.app.services.mappers.VoteMapper;
 import com.southsystem.ApiVoting.app.services.mappers.VotingSessionMapper;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
@@ -53,7 +63,16 @@ public class VotingSessionResource {
 	private VotingAgendaService votingAgendaService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private VoteService voteService;
+
+	@Autowired
 	private VotingSessionMapper votingSessionMapper;
+
+	@Autowired
+	private VoteMapper voteMapper;
 
 	@GetMapping(value = "/{id}")
 	@ApiOperation(value = "Find a VotingSession by Id.")
@@ -103,7 +122,6 @@ public class VotingSessionResource {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
 		return new ResponseEntity<>(response, headers, HttpStatus.OK);
-
 	}
 
 	@PostMapping(path = "", produces = { "application/json" })
@@ -134,6 +152,7 @@ public class VotingSessionResource {
 		VotingSessionEntity votingSessionEntity = votingSessionService
 				.create(votingSessionMapper.toEntity(req, votingAgenda.get()));
 		VotingSessionDTO votingSessionDTO = votingSessionMapper.toDTO(votingSessionEntity, votingAgenda.get());
+
 		createSelfLink(votingSessionEntity, votingSessionDTO);
 		response.setData(votingSessionDTO);
 
@@ -157,6 +176,52 @@ public class VotingSessionResource {
 		dto.getAgenda().add(childLink);
 	}
 
+	@PostMapping(path = "vote", produces = { "application/json" })
+	@ApiOperation(value = "Send Vote.")
+	public ResponseEntity<Response<VoteDTO>> addVote(
+			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
+			@Valid @RequestBody AddVoteRequestDTO data, BindingResult result) throws UserNotFoundException,
+			VotingSessionNotFoundException, VotingSessionAlreadyEndedException, UserAlreadyVotedException {
+
+		// mudar para req - padrão
+
+		Response<VoteDTO> response = new Response<>();
+
+		if (result.hasErrors()) {
+			result.getAllErrors().forEach(error -> response.addErrorMsgToResponse(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		Optional<UserEntity> user = userService.find(data.getUserId());
+		if (user.isEmpty()) {
+			throw new UserNotFoundException("No user found with 'id' = " + data.getUserId());
+		}
+		Optional<VotingSessionEntity> votingSession = votingSessionService.find(data.getVotingSessionId());
+		if (votingSession.isEmpty()) {
+			throw new VotingSessionNotFoundException(
+					"No voting session found with 'id' = " + data.getVotingSessionId());
+		}
+		if (LocalDateTime.now().isAfter(votingSession.get().getEndDateTime())) {
+			throw new VotingSessionAlreadyEndedException("This voting session has already ended.");
+		}
+		if (voteService.verifyIfUserVoted(data.getVotingSessionId(), data.getUserId())) {
+			throw new UserAlreadyVotedException("This user already voted.");
+		}
+
+		VotingSessionEntity updatedVotingSession = votingSessionService.addVote(votingSession.get(),
+				voteMapper.toEntity(votingSession.get(), user.get(), data.getVoteType()));
+		VoteDTO voteDTO = voteMapper.toDTO(updatedVotingSession, user.get(), data.getVoteType());
+
+		createSelfLink(apiVersion, voteDTO);
+		response.setData(voteDTO);
+
+//		messageProducer.send(MessageTopics.VOTE_RETURN, voteDTO);
+
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
+		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+	}
+
 	/**
 	 * Creates self links for the VotingSession objects.
 	 * 
@@ -175,6 +240,27 @@ public class VotingSessionResource {
 					.linkTo(methodOn(VotingSessionResource.class).findById(apiVersion, dto.getAgenda().getId()))
 					.withSelfRel().expand();
 			dto.getAgenda().add(childLink);
+		} catch (Exception e) {
+		}
+	}
+
+	private void createSelfLink(String apiVersion, final VoteDTO dto) {
+		Link childLinkUser;
+		Link childLinkSession;
+		Link childLinkAgenda;
+		try {
+			childLinkUser = WebMvcLinkBuilder
+					.linkTo(methodOn(UserResource.class).findById(apiVersion, dto.getUser().getId())).withSelfRel()
+					.expand();
+			dto.getUser().add(childLinkUser);
+			childLinkSession = WebMvcLinkBuilder
+					.linkTo(methodOn(VotingSessionResource.class).findById(apiVersion, dto.getSession().getId()))
+					.withSelfRel().expand();
+			dto.getSession().add(childLinkSession);
+			childLinkAgenda = WebMvcLinkBuilder.linkTo(
+					methodOn(VotingAgendaResource.class).findById(apiVersion, dto.getSession().getAgenda().getId()))
+					.withSelfRel().expand();
+			dto.getSession().getAgenda().add(childLinkAgenda);
 		} catch (Exception e) {
 		}
 	}
