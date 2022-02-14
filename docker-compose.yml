@@ -1,0 +1,59 @@
+version: '3.8'
+
+volumes:
+  zookeeper_data:
+    name: zookeeper_data
+  kafka_data:
+    name: kafka_data
+  redis:
+    name: redis
+
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:3'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: 'bitnami/kafka:2'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - 'KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+
+  postgres:
+    image: 'postgres:14-alpine'
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=vote_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+
+  vote-api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - kafka
+      - postgres
+    command: 'mvn spring-boot:run'
+    volumes:
+      - './configuration:/tmp/configuration:delegated'
+      - './vote-api:/tmp/app:delegated'
+      - '~/.m2:/home/deploy/.m2:cached'
+    networks:
+      - default
+    ports:
+      - 8080:8080
+    restart: always
