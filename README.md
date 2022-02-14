@@ -40,7 +40,7 @@ Internamente, para a execução de tarefas assíncronas, utilizei a api **Schedu
 
 #### Performance
 
-Cache (descontinuado), execução de tarefas assíncronas e mensageria, compressão de mensagens.
+Cache (descontinuado), paginação nos endpoints de getAll(), execução de tarefas assíncronas e mensageria, compressão de mensagens.
 
 #### Versionamento da API
 
