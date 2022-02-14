@@ -18,6 +18,9 @@ $ docker-compose up
 ```
 ![docs](https://ibb.co/HBxQxT4)
 
+![docs](https://github.com/edddjunior/desafio-back-votos/docs.png?raw=true)
+
+
 ## Tecnologias Utilizadas
 - CI Github Actions
 - DigitalOcean Droplet
