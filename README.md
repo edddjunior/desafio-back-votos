@@ -16,9 +16,8 @@ PS -> Para um melhor aproveitamento da revisão, recomendo que tenha o [Lombok](
 // dentro do diretório do projeto
 $ docker-compose up 
 ```
-![docs](https://ibb.co/HBxQxT4)
 
-![docs](https://github.com/edddjunior/desafio-back-votos/docs.png?raw=true)
+![docs](https://github.com/edddjunior/desafio-back-votos/blob/docs.png?raw=true)
 
 
 ## Tecnologias Utilizadas
