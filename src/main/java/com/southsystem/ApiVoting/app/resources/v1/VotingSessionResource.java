@@ -209,7 +209,7 @@ public class VotingSessionResource {
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
 	}
 
-	@PostMapping(path = "{sessionId}/results", produces = { "application/json" })
+	@GetMapping(path = "{sessionId}/results", produces = { "application/json" })
 	@ApiOperation(value = "Verify Session Results.")
 	public ResponseEntity<Response<SessionVotesDTO>> verifyResults(
 			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
