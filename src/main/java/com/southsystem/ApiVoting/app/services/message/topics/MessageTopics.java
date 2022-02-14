@@ -1,4 +1,4 @@
-package com.southsystem.ApiVoting.app.services.message.enums;
+package com.southsystem.ApiVoting.app.services.message.topics;
 
 import lombok.RequiredArgsConstructor;
 

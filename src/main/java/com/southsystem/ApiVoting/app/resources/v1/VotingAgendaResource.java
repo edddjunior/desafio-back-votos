@@ -37,9 +37,11 @@ import com.southsystem.ApiVoting.app.services.mappers.VotingAgendaMapper;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("v1/voting/agendas")
+@Slf4j
 public class VotingAgendaResource {
 
 	@Autowired
@@ -147,6 +149,7 @@ public class VotingAgendaResource {
 					.withSelfRel().expand();
 			dto.add(selfLink);
 		} catch (Exception e) {
+			log.info(e.toString());
 		}
 	}
 }

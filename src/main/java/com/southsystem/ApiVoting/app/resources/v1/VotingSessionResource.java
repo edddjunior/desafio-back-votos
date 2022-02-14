@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.southsystem.ApiVoting.app.config.dto.response.Response;
+import com.southsystem.ApiVoting.app.domain.dto.SessionVotesDTO;
 import com.southsystem.ApiVoting.app.domain.dto.VoteDTO;
 import com.southsystem.ApiVoting.app.domain.dto.VotingSessionDTO;
 import com.southsystem.ApiVoting.app.domain.entities.UserEntity;
@@ -46,14 +47,17 @@ import com.southsystem.ApiVoting.app.services.UserService;
 import com.southsystem.ApiVoting.app.services.VoteService;
 import com.southsystem.ApiVoting.app.services.VotingAgendaService;
 import com.southsystem.ApiVoting.app.services.VotingSessionService;
+import com.southsystem.ApiVoting.app.services.jobs.workers.VoteWorker;
 import com.southsystem.ApiVoting.app.services.mappers.VoteMapper;
 import com.southsystem.ApiVoting.app.services.mappers.VotingSessionMapper;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("v1/voting/sessions")
+@Slf4j
 public class VotingSessionResource {
 
 	@Autowired
@@ -67,6 +71,9 @@ public class VotingSessionResource {
 
 	@Autowired
 	private VoteService voteService;
+
+	@Autowired
+	private VoteWorker voteWorker;
 
 	@Autowired
 	private VotingSessionMapper votingSessionMapper;
@@ -161,6 +168,73 @@ public class VotingSessionResource {
 		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
 	}
 
+	@PostMapping(path = "vote", produces = { "application/json" })
+	@ApiOperation(value = "Send Vote.")
+	public ResponseEntity<Response<VoteDTO>> addVote(
+			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
+			@Valid @RequestBody AddVoteRequestDTO req, BindingResult result) throws UserNotFoundException,
+			VotingSessionNotFoundException, VotingSessionAlreadyEndedException, UserAlreadyVotedException {
+
+		Response<VoteDTO> response = new Response<>();
+
+		if (result.hasErrors()) {
+			result.getAllErrors().forEach(error -> response.addErrorMsgToResponse(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		Optional<UserEntity> user = userService.find(req.getUserId());
+		if (user.isEmpty()) {
+			throw new UserNotFoundException("No user found with 'id' = " + req.getUserId());
+		}
+		Optional<VotingSessionEntity> votingSession = votingSessionService.find(req.getVotingSessionId());
+		if (votingSession.isEmpty()) {
+			throw new VotingSessionNotFoundException("No voting session found with 'id' = " + req.getVotingSessionId());
+		}
+		if (LocalDateTime.now().isAfter(votingSession.get().getEndDateTime())) {
+			throw new VotingSessionAlreadyEndedException("This voting session has already ended.");
+		}
+		if (voteService.verifyIfUserVoted(req.getVotingSessionId(), req.getUserId())) {
+			throw new UserAlreadyVotedException("This user already voted.");
+		}
+
+		VotingSessionEntity updatedVotingSession = votingSessionService.addVote(votingSession.get(),
+				voteMapper.toEntity(votingSession.get(), user.get(), req.getVoteType()));
+		VoteDTO voteDTO = voteMapper.toDTO(updatedVotingSession, user.get(), req.getVoteType());
+
+		createSelfLink(apiVersion, voteDTO);
+		response.setData(voteDTO);
+
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
+		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+	}
+
+	@PostMapping(path = "{sessionId}/results", produces = { "application/json" })
+	@ApiOperation(value = "Verify Session Results.")
+	public ResponseEntity<Response<SessionVotesDTO>> verifyResults(
+			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
+			@PathVariable("sessionId") Long sessionId)
+			throws VotingSessionNotFoundException, VotingSessionAlreadyEndedException {
+
+		Response<SessionVotesDTO> response = new Response<>();
+
+		Optional<VotingSessionEntity> votingSession = votingSessionService.find(sessionId);
+		if (votingSession.isEmpty()) {
+			throw new VotingSessionNotFoundException("No voting session found with 'id' = " + sessionId);
+		}
+		if (LocalDateTime.now().isAfter(votingSession.get().getEndDateTime())) {
+			throw new VotingSessionAlreadyEndedException("This voting session has already ended.");
+		}
+
+		SessionVotesDTO results = voteWorker.getResults(sessionId);
+		createSelfLink(apiVersion, results);
+		response.setData(results);
+
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
+		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
+	}
+
 	/**
 	 * Creates a self link of the VotingSession object
 	 * 
@@ -174,52 +248,6 @@ public class VotingSessionResource {
 		Link childLink = WebMvcLinkBuilder.linkTo(VotingAgendaResource.class).slash(entity.getVotingAgenda().getId())
 				.withSelfRel();
 		dto.getAgenda().add(childLink);
-	}
-
-	@PostMapping(path = "vote", produces = { "application/json" })
-	@ApiOperation(value = "Send Vote.")
-	public ResponseEntity<Response<VoteDTO>> addVote(
-			@RequestHeader(value = ApiUtil.HEADER_API_VERSION, defaultValue = "${api.docs.version}") String apiVersion,
-			@Valid @RequestBody AddVoteRequestDTO data, BindingResult result) throws UserNotFoundException,
-			VotingSessionNotFoundException, VotingSessionAlreadyEndedException, UserAlreadyVotedException {
-
-		// mudar para req - padrão
-
-		Response<VoteDTO> response = new Response<>();
-
-		if (result.hasErrors()) {
-			result.getAllErrors().forEach(error -> response.addErrorMsgToResponse(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
-		}
-
-		Optional<UserEntity> user = userService.find(data.getUserId());
-		if (user.isEmpty()) {
-			throw new UserNotFoundException("No user found with 'id' = " + data.getUserId());
-		}
-		Optional<VotingSessionEntity> votingSession = votingSessionService.find(data.getVotingSessionId());
-		if (votingSession.isEmpty()) {
-			throw new VotingSessionNotFoundException(
-					"No voting session found with 'id' = " + data.getVotingSessionId());
-		}
-		if (LocalDateTime.now().isAfter(votingSession.get().getEndDateTime())) {
-			throw new VotingSessionAlreadyEndedException("This voting session has already ended.");
-		}
-		if (voteService.verifyIfUserVoted(data.getVotingSessionId(), data.getUserId())) {
-			throw new UserAlreadyVotedException("This user already voted.");
-		}
-
-		VotingSessionEntity updatedVotingSession = votingSessionService.addVote(votingSession.get(),
-				voteMapper.toEntity(votingSession.get(), user.get(), data.getVoteType()));
-		VoteDTO voteDTO = voteMapper.toDTO(updatedVotingSession, user.get(), data.getVoteType());
-
-		createSelfLink(apiVersion, voteDTO);
-		response.setData(voteDTO);
-
-//		messageProducer.send(MessageTopics.VOTE_RETURN, voteDTO);
-
-		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add(ApiUtil.HEADER_API_VERSION, apiVersion);
-		return new ResponseEntity<>(response, headers, HttpStatus.CREATED);
 	}
 
 	/**
@@ -241,6 +269,7 @@ public class VotingSessionResource {
 					.withSelfRel().expand();
 			dto.getAgenda().add(childLink);
 		} catch (Exception e) {
+			log.info(e.toString());
 		}
 	}
 
@@ -262,6 +291,19 @@ public class VotingSessionResource {
 					.withSelfRel().expand();
 			dto.getSession().getAgenda().add(childLinkAgenda);
 		} catch (Exception e) {
+			log.info(e.toString());
+		}
+	}
+
+	private void createSelfLink(String apiVersion, final SessionVotesDTO dto) {
+		Link selfLink;
+		try {
+			selfLink = WebMvcLinkBuilder
+					.linkTo(methodOn(VotingSessionResource.class).verifyResults(apiVersion, dto.getVotingSessionId()))
+					.withSelfRel().expand();
+			dto.add(selfLink);
+		} catch (Exception e) {
+			log.info(e.toString());
 		}
 	}
 }

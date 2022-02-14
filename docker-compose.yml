@@ -5,6 +5,8 @@ volumes:
     name: zookeeper_data
   kafka_data:
     name: kafka_data
+  redis:
+    name: redis
 
 services:
   zookeeper:
@@ -41,15 +43,11 @@ services:
   vote-api:
     build:
       context: .
-      dockerfile: ./Docker/run/Dockerfile
+      dockerfile: ./Dockerfile
     depends_on:
       - kafka
       - postgres
     command: 'mvn spring-boot:run'
-    environment:
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=123456
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     volumes:
       - './configuration:/tmp/configuration:delegated'
       - './vote-api:/tmp/app:delegated'

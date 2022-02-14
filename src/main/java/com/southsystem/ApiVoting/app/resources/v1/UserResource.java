@@ -37,9 +37,11 @@ import com.southsystem.ApiVoting.app.services.mappers.UserMapper;
 import com.southsystem.ApiVoting.app.util.ApiUtil;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("v1/users")
+@Slf4j
 public class UserResource {
 
 	@Autowired
@@ -146,6 +148,7 @@ public class UserResource {
 					.withSelfRel().expand();
 			dto.add(selfLink);
 		} catch (Exception e) {
+			log.info(e.toString());
 		}
 	}
 }
