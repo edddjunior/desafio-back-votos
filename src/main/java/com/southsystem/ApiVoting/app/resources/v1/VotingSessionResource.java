@@ -222,9 +222,6 @@ public class VotingSessionResource {
 		if (votingSession.isEmpty()) {
 			throw new VotingSessionNotFoundException("No voting session found with 'id' = " + sessionId);
 		}
-		if (LocalDateTime.now().isAfter(votingSession.get().getEndDateTime())) {
-			throw new VotingSessionAlreadyEndedException("This voting session has already ended.");
-		}
 
 		SessionVotesDTO results = voteWorker.getResults(sessionId);
 		createSelfLink(apiVersion, results);
